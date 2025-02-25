@@ -3,17 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   server.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: oozsipah < oozsipah@student.42kocaeli.c    +#+  +:+       +#+        */
+/*   By: oozsipah <oozsipah@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/09 17:44:57 by oozsipah          #+#    #+#             */
-/*   Updated: 2025/02/09 18:45:36 by oozsipah         ###   ########.fr       */
+/*   Updated: 2025/02/25 12:36:17 by oozsipah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <signal.h>
 #include <unistd.h>
 
-void ft_putnbr(pid_t num)
+void ft_putnbr(__pid_t num)
 {
     if (num > 9)
         ft_putnbr(num / 10);
@@ -45,7 +45,7 @@ int main(void)
 {
     signal(SIGUSR1, signal_handler);
     signal(SIGUSR2, signal_handler);
-    pid_t server_pid = getpid();
+    __pid_t server_pid = getpid();
     ft_putnbr(server_pid);
     write(1, "\n", 1);
     while (1)

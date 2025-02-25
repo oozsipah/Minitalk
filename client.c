@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   client.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: oozsipah < oozsipah@student.42kocaeli.c    +#+  +:+       +#+        */
+/*   By: oozsipah <oozsipah@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/09 17:45:06 by oozsipah          #+#    #+#             */
-/*   Updated: 2025/02/09 18:43:03 by oozsipah         ###   ########.fr       */
+/*   Updated: 2025/02/25 12:36:27 by oozsipah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ static int	ft_atoi(const char *s)
     return (result);
 }
 
-void    send_msg(pid_t  server_pid, char *msg)
+void    send_msg(__pid_t  server_pid, char *msg)
 {
     int bit_counter;
     int i;
@@ -67,7 +67,7 @@ int main(int ac, char **av)
         write(1, "Usage: name of program <server_pid> <message>\n", 46);
         return (1);
     }
-    pid_t server_pid = ft_atoi(av[1]);
+    __pid_t server_pid = ft_atoi(av[1]);
     if (server_pid < 0)
         write(1, "server pid cannot be negative!", 30);
     send_msg(server_pid, av[2]);

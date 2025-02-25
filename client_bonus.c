@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   client_bonus.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: oozsipah < oozsipah@student.42kocaeli.c    +#+  +:+       +#+        */
+/*   By: oozsipah <oozsipah@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/27 20:41:32 by oozsipah          #+#    #+#             */
-/*   Updated: 2025/02/15 23:05:59 by oozsipah         ###   ########.fr       */
+/*   Updated: 2025/02/25 20:47:21 by oozsipah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 #include <unistd.h>
 #include <signal.h>
 #include <stdlib.h>
+
 int flag = 1;
 
 static int	ft_atoi(const char *s)
@@ -33,7 +34,7 @@ static int	ft_atoi(const char *s)
     return (result);
 }
 
-static void	send_pid(pid_t client_pid, pid_t server_pid)
+static void	send_pid(__pid_t client_pid, __pid_t server_pid)
 {
     int	bit_counter;
 
@@ -60,7 +61,7 @@ static void	handle_signal(int signal)
         flag = 1;
 }
 
-static void	send_signal(const char *msg, pid_t server_pid)
+static void	send_signal(const char *msg, __pid_t server_pid)
 {
     size_t	i;
     int		bit_counter;
@@ -79,8 +80,8 @@ static void	send_signal(const char *msg, pid_t server_pid)
                     kill(server_pid, SIGUSR1);
                 else
                     kill(server_pid, SIGUSR2);
-                flag = 0;
                 bit_counter--;
+                flag = 0;
             }
         }
         i++;
@@ -91,16 +92,18 @@ static void	send_signal(const char *msg, pid_t server_pid)
         if (flag)
         {
             kill(server_pid, SIGUSR2);
-            bit_counter--;
             flag = 0;
+            printf("Bit counter -> : %d\n", bit_counter);
+            bit_counter--;
         }
     }
 }
 
 int	main(int ac, char **av)
 {
-    pid_t	client_pid;
-    pid_t	server_pid;
+    __pid_t	client_pid;
+    __pid_t	server_pid;
+    char a = '\n';
 
     if (ac != 3)
     {
@@ -119,6 +122,9 @@ int	main(int ac, char **av)
     signal(SIGUSR2, handle_signal);
     send_pid(client_pid, server_pid);
     send_signal(av[2], server_pid);
+    // send_signal(&a,server_pid);
+    // a = '\0';
+    // send_signal(&a,server_pid);
     while (1);
     return (0);
 }
