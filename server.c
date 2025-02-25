@@ -5,84 +5,50 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: oozsipah < oozsipah@student.42kocaeli.c    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/02/01 12:16:11 by oozsipah          #+#    #+#             */
-/*   Updated: 2025/02/04 18:56:00 by oozsipah         ###   ########.fr       */
+/*   Created: 2025/02/09 17:44:57 by oozsipah          #+#    #+#             */
+/*   Updated: 2025/02/09 18:45:36 by oozsipah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <unistd.h>
 #include <signal.h>
-#include <stdio.h>
+#include <unistd.h>
 
-static void	collect_pid(pid_t *client_pid, int signal, int *pid_is_ready)
+void ft_putnbr(pid_t num)
 {
-    static int	pid_bit;
+    if (num > 9)
+        ft_putnbr(num / 10);
+    write(1, &"0123456789"[num % 10], 1);
+}
 
-    if (signal == SIGUSR1)
-        *client_pid = (*client_pid << 1) | 1;
-    else if (signal == SIGUSR2)
-        *client_pid = *client_pid << 1;
+void    signal_handler(int signal)
+{
+    static char ch;
+    static int bit_counter;
     
-    pid_bit++;
-    if (pid_bit == 32)
-    {
-        *pid_is_ready = 1;
-        pid_bit = 0;
-    }
-}
-
-static void message_completed(int *pid_is_ready, pid_t *client_pid, int *bit_counter, char *ch)
-{
-    write(1, "\n", 1);
-    kill(*client_pid, SIGUSR1);
-    *pid_is_ready = 0;
-    *bit_counter = 0;
-    *ch = 0;
-}
-
-static void	handle_signal(int signal)
-{
-    static char     ch;
-    static int      bit_counter;
-    static pid_t    client_pid;
-    static int      pid_is_ready;
-
-    if (!pid_is_ready)
-        collect_pid(&client_pid, signal, &pid_is_ready);
+    if (signal == SIGUSR1)
+        ch = (ch << 1) | 1;
     else
+        ch = ch << 1;
+    bit_counter++;
+
+    if (bit_counter == 8)
     {
-        if (signal == SIGUSR1)
-            ch = (ch << 1) | 1;
-        else if (signal == SIGUSR2)
-            ch = ch << 1;
-        bit_counter++;
-        if (bit_counter == 8)
-        {
-            if (ch == '\0')
-                message_completed(&pid_is_ready, &client_pid, &bit_counter, &ch);
-            else
-            {
-                write(1, &ch, 1);
-                kill (client_pid, SIGUSR2);
-                bit_counter = 0;
-                ch = 0;
-            }
-        }
+        if (ch == '\0')
+            write(1, "\nmessage recivied\n", 18);
+        write(1, &ch, 1);
+        ch = 0;
+        bit_counter = 0;
     }
 }
 
-int	main(void)
+int main(void)
 {
-    pid_t	server_pid;
-
-    server_pid = getpid();
-    printf("Server PID: %d\n", server_pid);
-
-    signal(SIGUSR1, handle_signal);
-    signal(SIGUSR2, handle_signal);
-
+    signal(SIGUSR1, signal_handler);
+    signal(SIGUSR2, signal_handler);
+    pid_t server_pid = getpid();
+    ft_putnbr(server_pid);
+    write(1, "\n", 1);
     while (1)
         pause();
-    
-    return (0);
+    return(1);
 }
