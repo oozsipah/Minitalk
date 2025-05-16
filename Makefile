@@ -1,0 +1,40 @@
+CC = cc
+CFLAGS = -Wall -Werror -Wextra
+SRC_SERVER = server.c
+SRC_CLIENT = client.c client_utils.c
+OBJ_SERVER = $(SRC_SERVER:.c=.o)
+OBJ_CLIENT = $(SRC_CLIENT:.c=.o)
+BONUS_SRC_SERVER = server_bonus.c
+BONUS_SRC_CLIENT = client_bonus.c client_bonus_utils.c
+BONUS_OBJ_SERVER = $(BONUS_SRC_SERVER:.c=.o)
+BONUS_OBJ_CLIENT = $(BONUS_SRC_CLIENT:.c=.o)
+SERVER_NAME = server
+SERVER_NAME_BONUS = server_bonus
+CLIENT_NAME = client
+CLIENT_NAME_BONUS = client_bonus
+NAME = minitalk
+
+all: $(NAME)
+
+$(NAME) : $(SERVER_NAME) $(CLIENT_NAME)
+
+$(CLIENT_NAME) : $(OBJ_CLIENT)
+	$(CC) $(CFLAGS) $(OBJ_CLIENT) -o $(CLIENT_NAME)
+$(SERVER_NAME) : $(OBJ_SERVER)
+	$(CC) $(CFLAGS) $(OBJ_SERVER) -o $(SERVER_NAME)
+
+bonus: $(SERVER_NAME_BONUS) $(CLIENT_NAME_BONUS)
+
+$(SERVER_NAME_BONUS) : $(BONUS_OBJ_SERVER)
+	$(CC) $(CFLAGS) $(BONUS_OBJ_SERVER) -o $(SERVER_NAME_BONUS)
+$(CLIENT_NAME_BONUS) : $(BONUS_OBJ_CLIENT)
+	$(CC) $(CFLAGS) $(BONUS_OBJ_CLIENT) -o $(CLIENT_NAME_BONUS)
+
+clean:
+	rm -rf $(OBJ_SERVER) $(OBJ_CLIENT) $(BONUS_OBJ_CLIENT) $(BONUS_OBJ_SERVER)
+
+fclean: clean
+	rm -rf $(SERVER_NAME) $(CLIENT_NAME) $(CLIENT_NAME_BONUS) $(SERVER_NAME_BONUS)
+
+re: fclean all
+
